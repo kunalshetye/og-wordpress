@@ -1,4 +1,68 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+This is a Next.js app that demonstrates how you can do the following:
+
+- Setup Schema for External Content Sources in Optimizely Graph
+- Ingest Data from External Content Sources into Optimizely Graph
+- Setup WordPress to automatically push posts into Optimizely Graph
+
+
+## Environment Variables
+The following variables have to be configured in a _.env file when running locally_ or under vercel when you deploy this application
+
+| Variable Name             | Purpose                                                                                            |
+|---------------------------|----------------------------------------------------------------------------------------------------|
+| OG_APP_KEY                | The AppKey from Optimizely Graph                                                                   |
+| OG_APP_SECRET             | The Secret from Optimizely Graph                                                                   |
+| NEXT_PUBLIC_OG_SINGLE_KEY | The single key from Optimizely Graph                                                               |
+| WP_WEBHOOK_SECRET         | The secret passed to the /api/wordpress?secret={value} to authorize sync to Optimizely Graph calls |
+
+
+## Setup Schema for External Content Sources in Optimizely Graph
+_Note: make sure you have executed the **yarn** command in the root directory to install the relevant packages_
+
+run `yarn schema:push` command to do the following:
+- Create an External Source with id `wp` and with a content schema called `WordpressPosts`
+- Ingest Hello World post for the newly defined schema
+- Execute a graphql query to retrieve the newly ingested post
+
+You can also verify this in your browser by going to https://cg.optimizely.com/app/graphiql?auth={NEXT_PUBLIC_OG_SINGLE_KEY} and executing the following graphql query:
+
+```graphql
+query PostsFromWordpress {
+  WordpressPosts {
+    items {
+      _score
+      Id
+      Title
+      Content
+      Thumbnail
+    }
+  }
+}
+```
+
+## Ingest Data from External Content Sources into Optimizely Graph
+
+This is done with the help of [Route Handlers](https://nextjs.org/docs/app/building-your-application/routing/route-handlers) in Next.js
+
+The data flow looks like this:
+
+```mermaid
+sequenceDiagram
+    External Data Source->>Vercel Middleware: Content Published/Unpublished
+    Vercel Middleware->>Optimizely Graph: Synchronize Changes
+    Frontend App-->>Optimizely Graph: Fetch and Display new data
+```
+
+When there's any change in the external data source, the changes are pushed to the Next.js middleware allowing it to perform ELT operations on the wordpress data and ingest it into Optimizely Graph
+
+## Setup WordPress to automatically push posts into Optimizely Graph
+
+This makes use of the [WP Webhooks](https://wordpress.org/plugins/wp-webhooks/) plugin to notify the Next.js middleware about the changes that occur in WordPress.
+
+By default, the Next.js middleware is only handling the type `Post` so after you install the WordPress plugin you can enable the following webhooks:
+- Post Created
+- Post Updated
+- Post Trashed
 
 ## Getting Started
 
@@ -20,17 +84,4 @@ You can start editing the page by modifying `app/page.js`. The page auto-updates
 
 This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
 
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+#
