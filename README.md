@@ -1,3 +1,6 @@
+## Quick Deploy
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fkunalshetye%2Fog-wordpress&env=OG_APP_KEY,OG_APP_SECRET,NEXT_PUBLIC_OG_SINGLE_KEY,WP_WEBHOOK_SECRET)
+
 This is a Next.js app that demonstrates how you can do the following:
 
 - Setup Schema for External Content Sources in Optimizely Graph
