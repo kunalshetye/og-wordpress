@@ -1,0 +1,61 @@
+@rootUrl=https://cg.optimizely.com
+@key={{OG_APP_KEY}}:{{OG_APP_SECRET}}
+
+# Create the Schemas
+PUT {{rootUrl}}/api/content/v3/types?id=wp
+Content-Type: application/json
+Authorization: Basic {{key}}
+
+{
+  "label": "Wordpress Posts",
+  "languages": ["en"],
+  "contentTypes": {
+    "WordpressPosts": {
+      "contentType": [],
+      "properties": {
+        "_ts": {
+          "type": "Date"
+        },
+        "Source": {
+          "type": "String"
+        },
+        "Id": {
+          "type": "String"
+        },
+        "Thumbnail": {
+          "type": "String"
+        },
+        "Title": {
+          "type": "String",
+          "searchable": true
+        },
+        "Content": {
+          "type": "String",
+          "searchable": true
+        }
+      }
+    }
+  }
+}
+
+###
+
+# Ingest hello-world example
+
+POST {{rootUrl}}/api/content/v2/data?id=wp
+Content-Type: application/x-ndjson
+Authorization: Basic {{key}}
+
+{"index":{"_id":"wp-example","language_routing":"en"}}
+{"Id":"wp-example","_ts":"2023-10-05T11:21:51Z","Source":"wordpress","Title___searchable":"Hello World - Wordpress","Content___searchable":"This is a manditory hello world test","ContentType":["WordpressPosts","ExternalPosts"],"Status":"Published","RolesWithReadAccess":"Everyone"}
+
+# Query GraphQL to see if the post is indexed
+
+POST {{rootUrl}}/content/v2?
+Authorization: epi-single {{NEXT_PUBLIC_OG_SINGLE_KEY}}
+Content-Type: application/json
+
+{
+    "query": "query PostsFromWordpress {\n  WordpressPosts {\n    items {\n      _score\n      Id\n      Title\n      Content\n      Thumbnail\n    }\n  }\n}",
+    "operationName": "PostsFromWordpress"
+}
