@@ -1,4 +1,5 @@
 ## Quick Deploy
+
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fkunalshetye%2Fog-wordpress&env=OG_APP_KEY,OG_APP_SECRET,NEXT_PUBLIC_OG_SINGLE_KEY,WP_WEBHOOK_SECRET)
 
 This is a Next.js app that demonstrates how you can do the following:
@@ -7,8 +8,8 @@ This is a Next.js app that demonstrates how you can do the following:
 - Ingest Data from External Content Sources into Optimizely Graph
 - Setup WordPress to automatically push posts into Optimizely Graph
 
-
 ## Environment Variables
+
 The following variables have to be configured in a _.env file when running locally_ or under vercel when you deploy this application
 
 | Variable Name             | Purpose                                                                                            |
@@ -18,11 +19,12 @@ The following variables have to be configured in a _.env file when running local
 | NEXT_PUBLIC_OG_SINGLE_KEY | The single key from Optimizely Graph                                                               |
 | WP_WEBHOOK_SECRET         | The secret passed to the /api/wordpress?secret={value} to authorize sync to Optimizely Graph calls |
 
-
 ## Setup Schema for External Content Sources in Optimizely Graph
+
 _Note: make sure you have executed the **yarn** command in the root directory to install the relevant packages_
 
 run `yarn schema:push` command to do the following:
+
 - Create an External Source with id `wp` and with a content schema called `WordpressPosts`
 - Ingest Hello World post for the newly defined schema
 - Execute a graphql query to retrieve the newly ingested post
@@ -53,8 +55,8 @@ The data flow looks like this:
 
 ```mermaid
 sequenceDiagram
-    External Data Source->>Vercel Middleware: Content Published/Unpublished
-    Vercel Middleware->>Optimizely Graph: Synchronize Changes
+    External Data Source->>Next.js Middleware: Content Published/Unpublished
+    Next.js Middleware->>Optimizely Graph: Synchronize Changes
     Frontend App-->>Optimizely Graph: Fetch and Display new data
 ```
 
@@ -65,6 +67,7 @@ When there's any change in the external data source, the changes are pushed to t
 This makes use of the [WP Webhooks](https://wordpress.org/plugins/wp-webhooks/) plugin to notify the Next.js middleware about the changes that occur in WordPress.
 
 By default, the Next.js middleware is only handling the `Post` type in WordPress so after you install the WordPress plugin you can enable the following webhooks:
+
 - Post Created
 - Post Updated
 - Post Trashed
