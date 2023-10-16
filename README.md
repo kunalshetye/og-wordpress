@@ -61,10 +61,13 @@ When there's any change in the external data source, the changes are pushed to t
 
 This makes use of the [WP Webhooks](https://wordpress.org/plugins/wp-webhooks/) plugin to notify the Next.js middleware about the changes that occur in WordPress.
 
-By default, the Next.js middleware is only handling the type `Post` so after you install the WordPress plugin you can enable the following webhooks:
+By default, the Next.js middleware is only handling the `Post` type in WordPress so after you install the WordPress plugin you can enable the following webhooks:
 - Post Created
 - Post Updated
 - Post Trashed
+
+When registering the webhook url in WordPress make sure you include the value of `WP_WEBHOOK_SECRET`
+Example Webhook Url to use: `https://og-wordpress.vercel.app/api/wordpress?secret=super-strong-secret`
 
 ## Getting Started
 
