@@ -44,6 +44,8 @@ query PostsFromWordpress {
 
 This is done with the help of [Route Handlers](https://nextjs.org/docs/app/building-your-application/routing/route-handlers) in Next.js
 
+The wordpress route handler can be found under: `src/app/api/wordpress/route.js`
+
 The data flow looks like this:
 
 ```mermaid
